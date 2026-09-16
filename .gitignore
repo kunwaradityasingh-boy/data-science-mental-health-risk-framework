@@ -1,0 +1,89 @@
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ================================
+# Virtual Environment
+# ================================
+.venv/
+venv/
+env/
+
+# ================================
+# Environment / Secrets
+# ================================
+.env
+.env.*
+!.env.example
+
+# ================================
+# Jupyter
+# ================================
+.ipynb_checkpoints/
+
+# ================================
+# Data
+# ================================
+data/raw/*
+data/processed/*
+data/synthetic/*
+
+# Keep directory structure
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/synthetic/.gitkeep
+
+# ================================
+# Machine Learning Artifacts
+# ================================
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.pt
+models/*.pth
+models/*.onnx
+
+# ================================
+# Logs
+# ================================
+*.log
+logs/
+
+# ================================
+# OS
+# ================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ================================
+# IDE
+# ================================
+.vscode/
+.idea/
+
+# ================================
+# Temporary Files
+# ================================
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# ================================
+# Test / Coverage
+# ================================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ================================
+# Build
+# ================================
+build/
+dist/
+*.egg-info/
