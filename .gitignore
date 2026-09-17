@@ -96,3 +96,7 @@ dist/
 
 # Extracted raw dataset files
 data/raw/**/extracted/
+
+# Raw research source artifacts
+data/raw/**/inspection/
+
