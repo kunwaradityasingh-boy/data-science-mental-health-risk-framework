@@ -28,7 +28,10 @@ env/
 # ================================
 # Data
 # ================================
+# Raw datasets: ignore dataset files, but track dataset folders and READMEs
 data/raw/*
+!data/raw/**/
+!data/raw/**/README.md
 data/processed/*
 data/synthetic/*
 
@@ -87,3 +90,9 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+
+# Never track raw dataset archives
+*.zip
+
+# Extracted raw dataset files
+data/raw/**/extracted/
