@@ -38,14 +38,18 @@ They must not automatically be interpreted as clinical psychiatric diagnoses.
 
 ### Access
 
-Primary source:
+Publication source:
 
-ACL Anthology / associated dataset materials.
+https://aclanthology.org/D19-6213/
+
+Raw dataset distribution source:
+
+https://www.cs.columbia.edu/~eturcan/data/dreaddit.zip
 
 The official ACL Anthology attachment was acquired and inspected.
 
-The acquired attachment contains the research appendix PDF and does
-not contain the complete raw labelled dataset.
+The raw Dreaddit dataset was subsequently acquired from the
+author-hosted distribution source and extracted locally.
 
 ### Official Attachment
 
@@ -72,24 +76,37 @@ The annotation instructions describe three possible worker selections:
 - Can't Tell
 
 The appendix is supporting research documentation and is not a substitute
-for the complete raw dataset.
+for the complete raw labelled dataset.
+
+### Raw Dataset Acquisition
+
+- Complete raw dataset acquired: Yes
+- Download date: 2026-09-17
+- Archive: dreaddit.zip
+- Archive size: 1,348,791 bytes
+- SHA-256: 6C7D8859764231CCA47410D6995D8941AC45B08A446A561923FD73B34F3F61CB
+- Extracted files:
+  - dreaddit-train.csv
+  - dreaddit-test.csv
+- Extracted location:
+  - data/raw/dreaddit/extracted/
+
+### Dataset Version
+
+The downloaded distribution does not explicitly specify a dataset
+version or release identifier.
+
+The downloaded archive checksum is recorded to support reproducibility.
 
 ### License / Terms
 
-Exact dataset redistribution and reuse terms must be verified from the
-dataset distribution source before local acquisition.
+The raw dataset was acquired from the author-hosted distribution source.
 
-Do not assume that the publication being publicly accessible means that
-the underlying Reddit-derived data can be freely redistributed.
+License and redistribution terms require authoritative verification
+before redistribution or publication of the raw data.
 
-### Raw Dataset Acquisition Status
-
-- Official appendix acquired: Yes
-- Official appendix inspected: Yes
-- Complete raw dataset acquired: No
-- Complete labelled dataset present in acquired archive: No
-- Raw dataset access route: Pending authoritative verification
-- License/redistribution terms: Pending verification
+The public availability of the publication does not by itself establish
+permission to redistribute the underlying Reddit-derived data.
 
 ### Leakage Considerations
 
@@ -99,13 +116,75 @@ Potential risks:
 - Multiple posts from the same user
 - Near-duplicate text
 - Community/source effects
+- Exact text overlap across supplied train/test data
 
-Subject/user-aware splitting should be considered when identifiers permit.
+The supplied train/test split was audited.
+
+Results:
+
+- Overlapping record IDs: 0
+- Overlapping post IDs: 0
+- Exact text overlaps across train/test: 3
+
+The three exact text overlaps are retained in the raw dataset and documented
+as an evaluation limitation.
+
+For newly generated validation partitions, post-level group-aware splitting
+must be used.
+
+### Data Quality Audit
+
+The acquired dataset was inspected for:
+
+- Dataset dimensions
+- Missing values
+- Duplicate rows
+- Duplicate post IDs
+- Subreddit distribution
+- Text length
+- Label distribution
+- Cross-split ID overlap
+- Cross-split post overlap
+- Exact text overlap
+- Multiple segments per post
+
+The detailed audit results are documented in the Dreaddit evaluation
+protocol and audit scripts.
+
+### Local Storage
+
+Official attachment:
+
+data/raw/dreaddit/D19-6213.Attachment.zip
+
+Inspection copy:
+
+data/raw/dreaddit/inspection/Dreaddit_Appendix.pdf
+
+Downloaded raw dataset:
+
+data/raw/dreaddit/dreaddit.zip
+
+Extracted dataset:
+
+data/raw/dreaddit/extracted/
+
+### Git Tracking
+
+Raw dataset archives, extracted CSV files, and inspection artifacts are
+excluded from Git tracking.
+
+Dataset documentation and audit scripts are tracked by Git.
 
 ### Current Status
 
-Official appendix acquired and inspected; complete raw dataset acquisition
-and terms verification pending.
+Dreaddit raw dataset acquired and extracted successfully.
+
+Dataset quality and leakage audits completed.
+
+Evaluation protocol established.
+
+License and redistribution terms remain pending authoritative verification.
 
 ---
 
@@ -259,13 +338,15 @@ For every selected dataset:
 10. Do not expose raw personal or sensitive information in GitHub.
 11. Store raw datasets outside Git tracking.
 12. Keep dataset manifests and preprocessing metadata under version control.
+13. Record file checksums where practical.
+14. Document known leakage and evaluation limitations.
 
 ---
 
 ## 5. Acquisition Status
 
-| Dataset     | Provenance | Access Verified | Terms Verified | Downloaded    | Status    |
-| ----------- | ---------- | --------------- | -------------- | ------------- | --------- |
-| Dreaddit    | Yes        | Partial         | Pending        | Appendix only | Candidate |
-| MODMA       | Yes        | Yes             | EULA required  | No            | Candidate |
-| StudentLife | Yes        | Partial         | Pending        | No            | Candidate |
+| Dataset     | Provenance | Access Verified | Terms Verified | Downloaded | Status                     |
+| ----------- | ---------- | --------------- | -------------- | ---------- | -------------------------- |
+| Dreaddit    | Yes        | Yes             | Pending        | Yes        | Acquired; audits completed |
+| MODMA       | Yes        | Yes             | EULA required  | No         | Candidate                  |
+| StudentLife | Yes        | Partial         | Pending        | No         | Candidate                  |

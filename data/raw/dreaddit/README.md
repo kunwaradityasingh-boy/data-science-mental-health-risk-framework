@@ -59,17 +59,38 @@ Publication verified: Yes
 
 Official attachment acquired: Yes
 
-Raw dataset acquisition: Pending
+Complete raw dataset downloaded: Yes
 
-Local raw dataset download: No
+Raw dataset source:
+
+https://www.cs.columbia.edu/~eturcan/data/dreaddit.zip
 
 Download date: 2026-09-17
 
-Dataset version/release: TBD
+Downloaded archive:
 
-SHA-256 of official attachment:
+dreaddit.zip
 
-05EF5F84B9B22C054D37C02C1C2B86002B6BFF6989FB4380A105EFFFED09F0B5
+Archive size:
+
+1,348,791 bytes
+
+SHA-256:
+
+6C7D8859764231CCA47410D6995D8941AC45B08A446A561923FD73B34F3F61CB
+
+Extracted files:
+
+- dreaddit-train.csv
+- dreaddit-test.csv
+
+Extracted location:
+
+data/raw/dreaddit/extracted/
+
+Dataset version/release:
+
+Not explicitly specified by the distribution source.
 
 ## Storage
 
@@ -77,11 +98,17 @@ Raw data location:
 
 data/raw/dreaddit/
 
-Official attachment:
+Downloaded archive:
 
-data/raw/dreaddit/D19-6213.Attachment.zip
+data/raw/dreaddit/dreaddit.zip
 
-Inspection copy:
+Extracted files:
+
+data/raw/dreaddit/extracted/dreaddit-train.csv
+
+data/raw/dreaddit/extracted/dreaddit-test.csv
+
+Official research appendix:
 
 data/raw/dreaddit/inspection/Dreaddit_Appendix.pdf
 
@@ -98,7 +125,10 @@ Before model training:
 
 ## Status
 
-Official research appendix acquired.
+Official research appendix acquired and inspected.
 
-Complete raw Dreaddit dataset is still pending authoritative
-acquisition and terms verification.
+Complete raw Dreaddit dataset has been acquired and extracted locally.
+
+License and redistribution terms should still be verified from the
+authoritative distribution source before any redistribution or publication
+of the raw data.

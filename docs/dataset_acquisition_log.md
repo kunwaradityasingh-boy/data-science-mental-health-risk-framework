@@ -1,11 +1,22 @@
+# Dataset Acquisition Log
+
+## Purpose
+
+This document records the acquisition status of datasets used by the
+research framework.
+
+No dataset should be downloaded into the project until its source,
+access conditions, and applicable usage terms have been reviewed.
+
+---
+
 ## 1. Dreaddit
 
 ### Status
 
 Official ACL Anthology attachment acquired and inspected.
 
-The acquired attachment contains the research appendix PDF,
-not the complete raw labelled dataset.
+Complete raw Dreaddit dataset also acquired and extracted locally.
 
 ### Dataset
 
@@ -30,11 +41,15 @@ LOUHI 2019.
 DOI:
 10.18653/v1/D19-6213
 
-### Source
+### Sources
 
-ACL Anthology:
+Publication:
 
 https://aclanthology.org/D19-6213/
+
+Raw dataset distribution source:
+
+https://www.cs.columbia.edu/~eturcan/data/dreaddit.zip
 
 ### Official Attachment Acquired
 
@@ -50,10 +65,16 @@ https://aclanthology.org/D19-6213/
 
 ### Raw Dataset Acquisition
 
-- Complete raw dataset downloaded: No
-- Complete labelled dataset available in the acquired archive: No
-- Raw dataset source: Requires separate verification
-- Raw dataset license/redistribution terms: Pending verification
+- Complete raw dataset downloaded: Yes
+- Download date: 2026-09-17
+- Archive: dreaddit.zip
+- Archive size: 1,348,791 bytes
+- SHA-256: 6C7D8859764231CCA47410D6995D8941AC45B08A446A561923FD73B34F3F61CB
+- Extracted files:
+  - dreaddit-train.csv
+  - dreaddit-test.csv
+- Extracted location:
+  - data/raw/dreaddit/extracted/
 
 ### Appendix Inspection
 
@@ -64,14 +85,14 @@ The official appendix contains:
 - Model parameter settings
 - Additional error-analysis examples
 
-The appendix confirms that workers could assign:
+The annotation instructions describe three possible worker selections:
 
 - Stress
 - Not Stress
 - Can't Tell
 
 The appendix is supporting research documentation and is not a
-substitute for the complete raw dataset.
+substitute for the complete raw labelled dataset.
 
 ### Research Label
 
@@ -79,6 +100,13 @@ Stress-related annotation.
 
 The label must be treated as a research annotation and not automatically
 as a clinical psychiatric diagnosis.
+
+### License / Redistribution Terms
+
+The raw dataset was acquired from the author-hosted distribution source.
+
+License and redistribution terms still require authoritative verification
+before redistribution or publication of the raw data.
 
 ### Leakage Checks Required
 
@@ -100,10 +128,28 @@ Inspection copy:
 
 data/raw/dreaddit/inspection/Dreaddit_Appendix.pdf
 
+Downloaded raw dataset:
+
+data/raw/dreaddit/dreaddit.zip
+
+Extracted dataset:
+
+data/raw/dreaddit/extracted/
+
 ### Git Tracking
 
-Raw dataset files and archives are excluded by .gitignore.
-Dataset documentation is tracked by Git.
+Raw dataset archives, extracted CSV files, and inspection artifacts are
+excluded from Git tracking.
+
+Dataset documentation and audit scripts are tracked by Git.
+
+### Current Status
+
+Raw Dreaddit dataset acquired and extracted successfully.
+
+Dataset quality and leakage audits completed.
+
+License and redistribution terms remain pending authoritative verification.
 
 ---
 
@@ -216,10 +262,10 @@ Raw dataset files are excluded by .gitignore.
 
 ---
 
-## Current Acquisition Queue
+## Current Acquisition Status
 
-| Priority | Dataset     | Modality   | Status                                          |
-| -------: | ----------- | ---------- | ----------------------------------------------- |
-|        1 | Dreaddit    | Text       | Official appendix acquired; raw dataset pending |
-|        2 | StudentLife | Behavioral | Pending verification                            |
-|        3 | MODMA       | Voice      | Pending verification                            |
+| Dataset     | Modality   | Downloaded | Extracted | Status                     |
+| ----------- | ---------- | ---------- | --------- | -------------------------- |
+| Dreaddit    | Text       | Yes        | Yes       | Acquired; audits completed |
+| StudentLife | Behavioral | No         | No        | Pending verification       |
+| MODMA       | Voice      | No         | No        | Pending verification       |
