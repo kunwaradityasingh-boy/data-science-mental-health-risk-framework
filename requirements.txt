@@ -20,3 +20,4 @@ shap
 mlflow
 pytest
 httpx
+PyYAML

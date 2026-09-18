@@ -1,0 +1,4 @@
+experiment,false_positives,mean_score,median_score,mean_text_length
+text_only,115,0.5847,0.5663,467.4696
+text_plus_all_engineered,96,0.7006,0.6948,471.2292
+text_plus_social,109,0.5988,0.5929,479.9358

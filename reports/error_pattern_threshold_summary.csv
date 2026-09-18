@@ -1,0 +1,4 @@
+experiment,mean_distance,median_distance,error_mean_distance,correct_mean_distance
+text_only,0.1395,0.1208,0.0793,0.1631
+text_plus_all_engineered,0.2837,0.3031,0.1979,0.3108
+text_plus_social,0.1502,0.1352,0.0943,0.1698

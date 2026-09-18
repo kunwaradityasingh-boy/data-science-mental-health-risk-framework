@@ -1,0 +1,2 @@
+sample_index,actual_label,predicted_class,probability_class_1,shap_base_value,non_zero_shap_features,shap_sum,model_decision_value,additivity_absolute_difference
+42,1,0,0.4254386651314109,-0.2805771477962945,108,-0.300486063892607,-0.3004860638926071,1.1102230246251565e-16

@@ -1,0 +1,50 @@
+version: "1.0"
+
+description: >
+  Research-only risk signal policy.
+  Thresholds are configuration values and are not
+  clinical diagnostic thresholds.
+
+score_bands:
+  low:
+    min_score: 0.0
+    max_score: 0.39
+
+  moderate:
+    min_score: 0.40
+    max_score: 0.69
+
+  high:
+    min_score: 0.70
+    max_score: 1.0
+
+unknown_conditions:
+  missing_score: true
+  insufficient_data_quality: true
+  unsupported_modality: true
+
+human_review:
+  moderate: recommended
+  high: required
+  low: not_required
+  unknown: unavailable
+
+policy_notes:
+  - >
+    These thresholds are research configuration values,
+    not clinical diagnostic thresholds.
+
+  - >
+    Thresholds must not be tuned using the final holdout
+    test set.
+
+  - >
+    Risk bands represent model-generated research signals.
+
+  - >
+    A high research risk signal does not establish
+    the presence of a mental-health disorder.
+
+  - >
+    Human review is required before any consequential
+    real-world interpretation.

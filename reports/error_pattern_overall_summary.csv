@@ -1,0 +1,4 @@
+experiment,records,errors,false_positives,false_negatives,error_rate
+text_only,715,202,115,87,28.25
+text_plus_all_engineered,715,172,96,76,24.06
+text_plus_social,715,185,109,76,25.87

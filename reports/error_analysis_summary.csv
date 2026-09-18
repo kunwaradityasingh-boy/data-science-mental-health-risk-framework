@@ -1,0 +1,4 @@
+experiment,total_records,true_positives,true_negatives,false_positives,false_negatives,total_errors,correct_predictions,error_rate,accuracy_from_predictions
+text_only,715,282,231,115,87,202,513,28.251748251748253,71.74825174825175
+text_plus_all_engineered,715,293,250,96,76,172,543,24.055944055944057,75.94405594405595
+text_plus_social,715,293,237,109,76,185,530,25.874125874125873,74.12587412587412

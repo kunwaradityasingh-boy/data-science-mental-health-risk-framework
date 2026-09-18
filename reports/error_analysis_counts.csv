@@ -1,0 +1,13 @@
+experiment,error_type,count,percentage
+text_only,false_negative,87,12.167832167832168
+text_only,false_positive,115,16.083916083916083
+text_only,true_negative,231,32.30769230769231
+text_only,true_positive,282,39.44055944055944
+text_plus_all_engineered,false_negative,76,10.62937062937063
+text_plus_all_engineered,false_positive,96,13.426573426573427
+text_plus_all_engineered,true_negative,250,34.96503496503497
+text_plus_all_engineered,true_positive,293,40.97902097902098
+text_plus_social,false_negative,76,10.62937062937063
+text_plus_social,false_positive,109,15.244755244755245
+text_plus_social,true_negative,237,33.14685314685315
+text_plus_social,true_positive,293,40.97902097902098
