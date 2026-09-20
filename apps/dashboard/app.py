@@ -413,6 +413,47 @@ section[data-testid="stSidebar"] hr {
     color: #365954;
 }
 
+/* ---------- Class / signal legend ---------- */
+.class-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px 8px;
+    padding: 10px 12px;
+    margin-top: 12px;
+    border: 1px solid #dfe8e5;
+    border-radius: 10px;
+    background: #fbfdfc;
+    color: #6b7d78;
+    font-size: 11px;
+}
+
+.class-pill {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 850;
+}
+
+.class-0 {
+    background: #eef3f2;
+    color: #4c625e;
+}
+
+.class-1 {
+    background: #e6f7f1;
+    color: #166b56;
+}
+
+.class-2 {
+    background: #fff4df;
+    color: #916219;
+}
+
+.class-text {
+    margin-right: 6px;
+}
+
 /* ---------- Hide Streamlit chrome ---------- */
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
@@ -795,7 +836,7 @@ def extract_voice_features(audio_bytes: bytes) -> pd.DataFrame:
 
 
 # ============================================================
-# PREDICTION FUNCTIONS — KEPT INTACT
+# PREDICTION FUNCTIONS
 # ============================================================
 
 def predict_text(text):
@@ -832,70 +873,268 @@ def predict_voice(audio_bytes):
 
         features = features[list(expected_features)]
 
-    probability = float(model.predict_proba(features)[0][1])
+    probability = float(
+        model.predict_proba(features)[0][1]
+    )
     prediction = int(probability >= 0.50)
 
     return probability, prediction, features
 
 
-def predict_behavior(behavior_df):
-    model = load_behavior_model()
-
+def get_behavior_expected_features(model):
+    """Read the exact input schema from the trained behavior model."""
     expected_features = getattr(
         model,
         "feature_names_in_",
         None,
     )
 
-    if expected_features is None:
-        expected_count = getattr(
-            model,
-            "n_features_in_",
-            None,
-        )
-
-        if expected_count is not None:
-            expected_features = [
-                f"feature_{i+1}"
-                for i in range(expected_count)
-            ]
-
     if expected_features is not None:
-        expected_features = list(expected_features)
+        return list(expected_features)
 
-        missing = [
-            column
-            for column in expected_features
-            if column not in behavior_df.columns
+    expected_count = getattr(
+        model,
+        "n_features_in_",
+        None,
+    )
+
+    if expected_count is not None:
+        return [
+            f"feature_{i+1}"
+            for i in range(expected_count)
         ]
 
-        if missing:
-            raise ValueError(
-                "Behavior feature mismatch.\n\n"
-                f"Missing columns: {missing}"
+    return None
+
+
+def build_behavior_template(model):
+    """Create a valid numeric CSV template from the trained model schema."""
+    expected_features = get_behavior_expected_features(model)
+
+    if expected_features is None:
+        raise ValueError(
+            "Behavior model feature schema is unavailable."
+        )
+
+    return pd.DataFrame(
+        [np.zeros(len(expected_features), dtype=float)],
+        columns=expected_features,
+    )
+
+
+def clean_behavior_input(
+    behavior_df,
+    expected_features,
+):
+    """
+    Prepare an uploaded behavior CSV without changing the trained model.
+
+    Handles:
+      - UTF-8 BOM and whitespace in headers
+      - common CSV index columns
+      - exact model feature selection/order
+      - whitespace around values
+      - numeric conversion
+      - clear invalid-cell reporting
+    """
+    df = behavior_df.copy()
+
+    # Normalize feature names.
+    df.columns = (
+        df.columns.astype(str)
+        .str.replace("\ufeff", "", regex=False)
+        .str.strip()
+    )
+
+    # Remove accidental pandas/index columns.
+    df = df[
+        [
+            col
+            for col in df.columns
+            if not str(col).lower().startswith("unnamed:")
+        ]
+    ].copy()
+
+    # Duplicate feature names are ambiguous.
+    duplicated = df.columns[
+        df.columns.duplicated()
+    ].tolist()
+
+    if duplicated:
+        raise ValueError(
+            "Duplicate feature columns found:\n"
+            + ", ".join(map(str, duplicated))
+        )
+
+    # Required schema check.
+    missing = [
+        column
+        for column in expected_features
+        if column not in df.columns
+    ]
+
+    if missing:
+        preview = ", ".join(map(str, missing[:12]))
+        extra = (
+            f" ... and {len(missing) - 12} more"
+            if len(missing) > 12
+            else ""
+        )
+        raise ValueError(
+            f"Missing {len(missing)} required model features:\n"
+            f"{preview}{extra}\n\n"
+            "Download the model-generated CSV template and use "
+            "its column names exactly."
+        )
+
+    # Keep exactly the trained model's feature order.
+    df = df[expected_features].copy()
+
+    # Strip whitespace from textual cells before conversion.
+    for column in df.columns:
+        if df[column].dtype == "object":
+            df[column] = df[column].map(
+                lambda value: value.strip()
+                if isinstance(value, str)
+                else value
             )
 
-        behavior_df = behavior_df[expected_features].copy()
-
-    behavior_df = behavior_df.apply(
+    numeric_df = df.apply(
         pd.to_numeric,
         errors="coerce",
     )
 
-    if behavior_df.isna().any().any():
-        raise ValueError(
-            "Behavior input contains missing "
-            "or non-numeric feature values."
+    invalid_mask = numeric_df.isna()
+
+    if invalid_mask.any().any():
+        bad_cells = []
+
+        for row_index in numeric_df.index[
+            invalid_mask.any(axis=1)
+        ]:
+            bad_columns = numeric_df.columns[
+                invalid_mask.loc[row_index]
+            ]
+
+            for column in bad_columns:
+                bad_cells.append(
+                    "row "
+                    f"{row_index + 2}, "
+                    f"'{column}' = "
+                    f"{df.loc[row_index, column]!r}"
+                )
+
+        preview = bad_cells[:12]
+        message = (
+            "Behavior CSV contains blank or non-numeric values.\n\n"
+            + "\n".join(preview)
         )
 
-    if np.isinf(behavior_df.to_numpy()).any():
+        remaining = len(bad_cells) - len(preview)
+        if remaining > 0:
+            message += f"\n... and {remaining} more invalid cells."
+
+        raise ValueError(message)
+
+    values = numeric_df.to_numpy(dtype=float)
+
+    if not np.isfinite(values).all():
         raise ValueError(
-            "Behavior input contains infinite values."
+            "Behavior CSV contains infinite values. "
+            "Use finite numeric values only."
         )
 
-    score = float(model.predict(behavior_df)[0])
+    if numeric_df.shape[0] == 0:
+        raise ValueError(
+            "Behavior CSV contains no data rows."
+        )
 
-    return score
+    return numeric_df
+
+
+def predict_behavior(behavior_df):
+    model = load_behavior_model()
+
+    expected_features = get_behavior_expected_features(
+        model
+    )
+
+    if expected_features is None:
+        raise ValueError(
+            "Behavior model feature schema is unavailable."
+        )
+
+    numeric_df = clean_behavior_input(
+        behavior_df,
+        expected_features,
+    )
+
+    # Keep original demo behavior: show the first uploaded row.
+    score = float(
+        model.predict(
+            numeric_df.iloc[[0]]
+        )[0]
+    )
+
+    return score, numeric_df
+
+
+def render_class_status(prediction: int, modality: str = "text"):
+    """Render class output plus a compact human-readable signal status.
+
+    Class 0 and Class 1 are the trained binary classifier outputs.
+    Class 2 is shown only as a framework-level UNKNOWN state; it is
+    not a trained third class in the current text/voice models.
+    """
+    actual_class = int(prediction)
+
+    signal_label = (
+        "Stress-related signal"
+        if modality == "text"
+        else "Target-related signal"
+    )
+
+    signal_value = "YES" if actual_class == 1 else "NO"
+
+    c1, c2 = st.columns(2)
+
+    with c1:
+        st.markdown(
+            f"""
+            <div class="result-card">
+                <div class="result-label">Predicted class</div>
+                <div class="result-value">Class {actual_class}</div>
+                <div class="result-muted">Trained binary output</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    with c2:
+        st.markdown(
+            f"""
+            <div class="result-card">
+                <div class="result-label">{signal_label}</div>
+                <div class="result-value">{signal_value}</div>
+                <div class="result-muted">Research signal only</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    st.markdown(
+        """
+        <div class="class-legend">
+            <span class="class-pill class-0">Class 0</span>
+            <span class="class-text">No positive signal</span>
+            <span class="class-pill class-1">Class 1</span>
+            <span class="class-text">Positive signal</span>
+            <span class="class-pill class-2">Class 2</span>
+            <span class="class-text">UNKNOWN · not a trained class</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 # ============================================================
@@ -1026,7 +1265,6 @@ for column, (icon, value, label, note) in zip([c1, c2, c3, c4], overview):
         )
 
 
-
 st.write("")
 
 st.write("")
@@ -1118,7 +1356,7 @@ with text_tab:
         st.write("")
         st.markdown("### Research output")
 
-        r1, r2, r3 = st.columns(3)
+        r1, r2 = st.columns(2)
 
         r1.metric(
             "Class-1 model score",
@@ -1126,26 +1364,25 @@ with text_tab:
         )
 
         r2.metric(
-            "Classification",
-            "Class 1" if result["prediction"] else "Class 0",
-        )
-
-        r3.metric(
             "Input words",
             result["words"],
         )
 
+        st.write("")
+
+        render_class_status(
+            result["prediction"],
+            modality="text",
+        )
+
         if result["prediction"]:
-            st.warning(
-                "Class-1 research signal detected."
-            )
+            st.success("Stress-related signal: YES")
         else:
-            st.success(
-                "No Class-1 research signal detected."
-            )
+            st.info("Stress-related signal: NO")
 
         st.caption(
-            "Research output · not a diagnosis."
+            "Class 0/1 are trained outputs. Class 2 is a framework-level "
+            "UNKNOWN state and is not produced by this binary model."
         )
 
 
@@ -1193,7 +1430,7 @@ with voice_tab:
 
                     except Exception as error:
                         st.error("Voice prediction failed.")
-                        st.exception(error)
+                        st.warning(str(error))
 
         with right:
             st.markdown(
@@ -1213,7 +1450,7 @@ with voice_tab:
             st.write("")
             st.markdown("### Research output")
 
-            r1, r2, r3 = st.columns(3)
+            r1, r2 = st.columns(2)
 
             r1.metric(
                 "Class-1 model score",
@@ -1221,19 +1458,21 @@ with voice_tab:
             )
 
             r2.metric(
-                "Classification",
-                "Class 1" if result["prediction"] else "Class 0",
-            )
-
-            r3.metric(
                 "Acoustic features",
                 len(result["features"].columns),
             )
 
+            st.write("")
+
+            render_class_status(
+                result["prediction"],
+                modality="voice",
+            )
+
             if result["prediction"]:
-                st.warning("EATD Class-1 classification signal detected.")
+                st.success("Class 1 target-related signal: YES")
             else:
-                st.success("EATD Class-0 classification signal detected.")
+                st.info("Class 1 target-related signal: NO")
 
             with st.expander("🔬 View extracted acoustic features"):
                 st.dataframe(
@@ -1242,7 +1481,8 @@ with voice_tab:
                 )
 
             st.caption(
-                "Acoustic feature values."
+                "EATD is a depression-classification experiment; the output "
+                "is not a clinical stress diagnosis."
             )
 
 
@@ -1251,15 +1491,13 @@ with voice_tab:
 # ============================================================
 
 with behavior_tab:
-    st.markdown('<div class="section-title">Behavioral research demo</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="section-subtitle">StudentLife · behavioral features + Random Forest regression</div>',
+        '<div class="section-title">Behavioral research demo</div>',
         unsafe_allow_html=True,
     )
-
-    st.warning(
-        "StudentLife modeling is a retrospective participant-level association "
-        "baseline. It is not presented as temporally aligned early prediction."
+    st.markdown(
+        '<div class="section-subtitle">StudentLife · behavioral features → PHQ-9 regression estimate</div>',
+        unsafe_allow_html=True,
     )
 
     if not BEHAVIOR_AVAILABLE:
@@ -1267,95 +1505,168 @@ with behavior_tab:
         st.code(str(BEHAVIOR_MODEL))
     else:
         behavior_model = load_behavior_model()
-
-        expected_features = getattr(
-            behavior_model,
-            "feature_names_in_",
-            None,
+        expected_features = get_behavior_expected_features(
+            behavior_model
         )
 
-        if expected_features is not None:
-            expected_features = list(expected_features)
+        if expected_features is None:
+            st.error(
+                "This model does not expose an input feature schema."
+            )
+        else:
+            st.markdown(
+                f"""
+                <div class="info-card">
+                    <h4>Behavior input</h4>
+                    <p>
+                        Use a CSV containing
+                        <strong>{len(expected_features)}</strong>
+                        numeric model features.
+                        The first row is used for the displayed estimate.
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-            left, right = st.columns([1, 1], gap="large")
+            st.write("")
 
-            with left:
+            template_df = build_behavior_template(
+                behavior_model
+            )
+
+            d1, d2 = st.columns(2)
+
+            with d1:
+                st.download_button(
+                    "⬇️ Download model template",
+                    data=template_df.to_csv(
+                        index=False
+                    ),
+                    file_name=(
+                        "studentlife_behavior_template.csv"
+                    ),
+                    mime="text/csv",
+                    use_container_width=True,
+                )
+
+            with d2:
+                st.download_button(
+                    "⬇️ Download demo CSV",
+                    data=template_df.to_csv(
+                        index=False
+                    ),
+                    file_name=(
+                        "studentlife_behavior_demo.csv"
+                    ),
+                    mime="text/csv",
+                    use_container_width=True,
+                )
+
+            st.caption(
+                "Demo CSV uses zero-valued features for pipeline testing only."
+            )
+
+            with st.expander("View required features"):
+                st.dataframe(
+                    pd.DataFrame(
+                        {
+                            "feature": expected_features
+                        }
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            behavior_file = st.file_uploader(
+                "Upload behavioral feature CSV",
+                type=["csv"],
+                key="behavior_upload",
+            )
+
+            if behavior_file is not None:
+                try:
+                    uploaded_df = pd.read_csv(
+                        behavior_file
+                    )
+
+                    p1, p2 = st.columns(2)
+                    p1.metric(
+                        "Rows",
+                        len(uploaded_df),
+                    )
+                    p2.metric(
+                        "Columns",
+                        len(uploaded_df.columns),
+                    )
+
+                    st.dataframe(
+                        uploaded_df.head(),
+                        use_container_width=True,
+                        hide_index=True,
+                    )
+
+                    if st.button(
+                        "📱 Analyze behavioral signal",
+                        type="primary",
+                        use_container_width=True,
+                    ):
+                        score, clean_df = predict_behavior(
+                            uploaded_df
+                        )
+
+                        st.session_state[
+                            "behavior_score"
+                        ] = score
+
+                        st.session_state[
+                            "behavior_input_shape"
+                        ] = clean_df.shape
+
+                        st.success(
+                            "Behavior input validated and prediction completed."
+                        )
+
+                except Exception as error:
+                    st.error(
+                        "Behavior CSV could not be processed."
+                    )
+                    st.warning(
+                        str(error)
+                    )
+
+            if "behavior_score" in st.session_state:
+                st.write("")
+                st.markdown("### Research output")
+
+                score = st.session_state[
+                    "behavior_score"
+                ]
+
+                st.metric(
+                    "Estimated PHQ-9 research score",
+                    f"{score:.2f}",
+                )
+
+                # Behavior is a continuous PHQ-9 regression output.
+                # Do not fabricate Class 0/1/2 or a stress YES/NO label here.
                 st.markdown(
-                    f"""
-                    <div class="info-card">
-                        <h4>Expected input</h4>
-                        <p>
-                            The model expects <strong>{len(expected_features)}</strong>
-                            behavioral features in participant-level CSV format.
-                        </p>
+                    """
+                    <div class="result-card" style="margin-top:12px;">
+                        <div class="result-label">Behavior signal</div>
+                        <div class="result-value">PHQ-9 estimate</div>
+                        <div class="result-muted">
+                            Continuous regression output · StudentLife
+                        </div>
                     </div>
                     """,
                     unsafe_allow_html=True,
                 )
 
-            with right:
-                template_df = pd.DataFrame(
-                    [np.zeros(len(expected_features))],
-                    columns=expected_features,
+                st.caption(
+                    "Behavior uses a continuous PHQ-9 research estimate. "
+                    "Classification/stress labels are not derived from this model."
                 )
-
-                st.download_button(
-                    "⬇️  Download CSV template",
-                    data=template_df.to_csv(index=False),
-                    file_name="studentlife_behavior_template.csv",
-                    mime="text/csv",
-                    use_container_width=True,
-                )
-
-            with st.expander("🔬 Show expected feature names"):
-                st.dataframe(
-                    pd.DataFrame({"feature": expected_features}),
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-        behavior_file = st.file_uploader(
-            "Upload behavioral feature CSV",
-            type=["csv"],
-            key="behavior_upload",
-        )
-
-        if behavior_file is not None:
-            try:
-                uploaded_df = pd.read_csv(behavior_file)
-
-                st.markdown("### Input preview")
-                st.dataframe(
-                    uploaded_df.head(),
-                    use_container_width=True,
-                    hide_index=True,
-                )
-
-                if st.button(
-                    "📱  Analyze behavioral signal",
-                    type="primary",
-                    use_container_width=True,
-                ):
-                    score = predict_behavior(uploaded_df)
-                    st.session_state["behavior_score"] = score
-
-            except Exception as error:
-                st.error("Behavior prediction failed.")
-                st.exception(error)
-
-        if "behavior_score" in st.session_state:
-            st.write("")
-            st.markdown("### Research output")
-
-            st.metric(
-                "Estimated PHQ-9 research score",
-                f"{st.session_state['behavior_score']:.2f}",
-            )
-
-            st.caption(
-                "Model-estimated StudentLife PHQ-9 research target. "
-                "Not a clinical assessment."
-            )
 
 
 # ============================================================
