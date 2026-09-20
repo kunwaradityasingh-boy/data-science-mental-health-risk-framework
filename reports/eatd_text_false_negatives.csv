@@ -1,0 +1,16 @@
+split,participant,label,new_label,predicted_probability,predicted_class,error_type
+validation,65,42.0,52.5,0.37216096484609124,0,false_negative
+validation,45,42.0,52.5,0.39441599537292366,0,false_negative
+validation,24,44.0,55.0,0.40258978978642007,0,false_negative
+validation,27,44.0,55.0,0.40778910725199546,0,false_negative
+validation,20,42.0,52.5,0.41154956398693193,0,false_negative
+validation,98,52.0,65.0,0.41993205364642994,0,false_negative
+validation,39,65.0,81.25,0.4280376617624681,0,false_negative
+validation,90,42.0,52.5,0.44321021963766283,0,false_negative
+validation,86,44.0,55.0,0.45294533048399277,0,false_negative
+validation,104,50.0,62.5,0.45709865504600056,0,false_negative
+validation,96,43.0,53.75,0.4577970416524008,0,false_negative
+validation,71,43.0,53.75,0.4577970416524008,0,false_negative
+validation,84,47.0,58.75,0.46923382262097946,0,false_negative
+validation,37,47.0,58.75,0.48082916287937216,0,false_negative
+validation,2,44.0,55.0,0.48580851539094555,0,false_negative

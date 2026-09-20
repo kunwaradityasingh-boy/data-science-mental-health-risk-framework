@@ -1,0 +1,2 @@
+model,dataset,validation_samples,positive_samples,negative_samples,probability_min,probability_mean,probability_median,probability_std,probability_max,roc_auc,pr_auc
+TF-IDF + Logistic Regression,EATD validation,79,15,64,0.3713483024586921,0.4378687895651454,0.43514815792129224,0.03766997542696386,0.6050866728448645,0.509375,0.2105332328623467

@@ -1,0 +1,22 @@
+EATD Voice Baseline Model
+=========================
+
+Dataset: EATD-Corpus
+Modality: Voice / Acoustic Features
+Acoustic features: 142
+Target: standardized SDS > 52
+Training participants: 83
+Validation participants: 79
+
+Validation Results
+------------------
+              model  accuracy  precision   recall       f1  roc_auc   pr_auc  tn  fp  fn  tp
+Logistic Regression  0.772152   0.285714 0.133333 0.181818 0.553125 0.238817  59   5  13   2
+      Random Forest  0.784810   0.000000 0.000000 0.000000 0.423958 0.209629  62   2  15   0
+
+Important limitations:
+1. EATD is a relatively small dataset.
+2. The target classes are imbalanced.
+3. The official validation split is used as the held-out evaluation set.
+4. Validation data was not used for model training.
+5. The model is a research baseline and is not a clinical diagnostic system.

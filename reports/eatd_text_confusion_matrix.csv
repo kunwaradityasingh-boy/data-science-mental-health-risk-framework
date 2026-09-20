@@ -1,0 +1,2 @@
+model,true_negative,false_positive,false_negative,true_positive
+Character TF-IDF + Logistic Regression,62,2,15,0

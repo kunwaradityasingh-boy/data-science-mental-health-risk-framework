@@ -1,0 +1,2 @@
+model,accuracy,precision,recall,f1,roc_auc,pr_auc,tn,fp,fn,tp
+Character TF-IDF + Logistic Regression,0.7848101265822784,0.0,0.0,0.0,0.509375,0.2105332328623467,62,2,15,0

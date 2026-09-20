@@ -1,0 +1,52 @@
+EATD MULTIMODAL ERROR + THRESHOLD ANALYSIS
+============================================================
+
+VALIDATION
+----------
+Participants: 79
+Non-depressed: 64
+Depressed: 15
+
+PRIMARY THRESHOLD
+-----------------
+0.50
+
+PRIMARY METRICS
+---------------
+Accuracy : 0.746835
+Precision: 0.222222
+Recall   : 0.133333
+F1       : 0.166667
+ROC-AUC  : 0.516667
+PR-AUC   : 0.215210
+
+CONFUSION MATRIX
+----------------
+[[57 7]
+ [13 2]]
+
+ERROR COUNTS
+------------
+TN: 57
+FP: 7
+FN: 13
+TP: 2
+
+PROBABILITY SUMMARY
+-------------------
+Minimum : 0.490489
+Mean    : 0.493870
+Median  : 0.492230
+Maximum : 0.513656
+
+METHODOLOGICAL NOTE
+-------------------
+The official EATD validation split was retained
+as the final evaluation set.
+
+Threshold analysis is descriptive and does not
+represent clinical threshold optimization.
+
+The multimodal model is a research benchmark
+and must not be interpreted as a clinical diagnosis
+or clinical probability.

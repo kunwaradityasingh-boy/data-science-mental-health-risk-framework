@@ -1,0 +1,39 @@
+EATD MULTIMODAL OOF PREDICTION REPORT
+============================================================
+
+Dataset: EATD-Corpus
+Modality: Text + Voice
+Target: new_label > 52
+Training split only: YES
+Number of folds: 5
+Random state: 42
+
+TRAINING DATA
+------------------------------------------------------------
+Participants: 83
+Non-depressed: 61
+Depressed: 22
+
+TEXT OOF PERFORMANCE
+------------------------------------------------------------
+ROC-AUC: 0.546200
+PR-AUC: 0.301912
+
+VOICE OOF PERFORMANCE
+------------------------------------------------------------
+ROC-AUC: 0.488823
+PR-AUC: 0.274443
+
+LEAKAGE CONTROL
+------------------------------------------------------------
+OOF probabilities generated using StratifiedKFold.
+Each OOF prediction was produced by a model that did not
+train on that participant.
+The official EATD validation split was not used.
+Text and voice records were joined using split-aware
+participant keys.
+
+STATUS
+------------------------------------------------------------
+OOF prediction generation: PASSED
+Phase 8 Step 1: COMPLETE

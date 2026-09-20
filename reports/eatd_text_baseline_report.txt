@@ -1,0 +1,22 @@
+EATD Text Baseline Model
+========================
+
+Dataset: EATD-Corpus
+Modality: Text
+Representation: Character-level TF-IDF
+Classifier: Logistic Regression
+Target: standardized SDS > 52
+Training participants: 83
+Validation participants: 79
+TF-IDF vocabulary size: 4648
+
+Validation metrics:
+                                 model  accuracy  precision  recall  f1  roc_auc   pr_auc  tn  fp  fn  tp
+Character TF-IDF + Logistic Regression   0.78481        0.0     0.0 0.0 0.509375 0.210533  62   2  15   0
+
+Important limitations:
+1. EATD is a relatively small dataset.
+2. The target classes are imbalanced.
+3. The official validation split is used as the held-out evaluation set.
+4. The TF-IDF vocabulary is fitted only on the training split.
+5. This is a research baseline and not a clinical diagnostic system.

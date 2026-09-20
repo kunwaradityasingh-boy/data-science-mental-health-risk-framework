@@ -1,0 +1,69 @@
+EATD TEXT ERROR AND THRESHOLD ANALYSIS REPORT
+============================================================
+
+Dataset: EATD-Corpus
+Modality: Text
+Model: Character-level TF-IDF + Logistic Regression
+Target: new_label > 52
+Official split: train / validation
+
+VALIDATION DATASET
+------------------------------------------------------------
+Validation samples: 79
+Non-depressed: 64
+Depressed: 15
+
+DEFAULT THRESHOLD = 0.50
+------------------------------------------------------------
+Accuracy: 0.784810
+Precision: 0.000000
+Recall: 0.000000
+F1: 0.000000
+ROC-AUC: 0.509375
+PR-AUC: 0.210533
+
+Confusion Matrix [TN FP; FN TP]
+[[62, 2], [15, 0]]
+
+PROBABILITY DISTRIBUTION
+------------------------------------------------------------
+Minimum: 0.37134830
+Mean: 0.43786879
+Median: 0.43514816
+Maximum: 0.60508667
+
+FALSE NEGATIVE ANALYSIS
+------------------------------------------------------------
+False negatives at threshold 0.50: 15
+True positives at threshold 0.50: 0
+
+THRESHOLD ANALYSIS
+------------------------------------------------------------
+Threshold 0.10: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.15: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.20: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.25: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.30: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.35: Accuracy=0.189873, Precision=0.189873, Recall=1.000000, F1=0.319149, PredictedPositive=79
+Threshold 0.40: Accuracy=0.265823, Precision=0.188406, Recall=0.866667, F1=0.309524, PredictedPositive=69
+Threshold 0.45: Accuracy=0.620253, Precision=0.241379, Recall=0.466667, F1=0.318182, PredictedPositive=29
+Threshold 0.50: Accuracy=0.784810, Precision=0.000000, Recall=0.000000, F1=0.000000, PredictedPositive=2
+
+INTERPRETATION
+------------------------------------------------------------
+The validation results are evaluated on the official EATD validation split.
+Accuracy must be interpreted together with precision, recall, F1, ROC-AUC and PR-AUC because the validation set contains substantially more non-depressed than depressed participants.
+Threshold analysis is descriptive and does not constitute clinical threshold selection.
+The model is a research baseline and must not be interpreted as a diagnostic system.
+The text model currently shows weak discrimination for the depressed class on the held-out validation set.
+Changing the classification threshold cannot by itself establish that the underlying text representation is clinically or scientifically adequate.
+
+PHASE 7 ERROR ANALYSIS STATUS
+------------------------------------------------------------
+Probability analysis: COMPLETE
+Threshold analysis: COMPLETE
+False-negative analysis: COMPLETE
+Validation metrics: COMPLETE
+Research limitation documentation: COMPLETE
+
+Phase 7 text error-analysis component: COMPLETE

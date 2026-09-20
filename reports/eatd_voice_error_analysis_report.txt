@@ -1,0 +1,36 @@
+EATD Voice Error and Threshold Analysis
+=======================================
+
+Validation participants: 79
+Depressed cases: 15
+Non-depressed cases: 64
+
+Threshold analysis:
+              model  threshold  accuracy  precision   recall       f1  tn  fp  fn  tp
+Logistic Regression       0.10  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.15  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.20  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.25  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.30  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.35  0.746835   0.222222 0.133333 0.166667  57   7  13   2
+Logistic Regression       0.40  0.759494   0.250000 0.133333 0.173913  58   6  13   2
+Logistic Regression       0.45  0.772152   0.285714 0.133333 0.181818  59   5  13   2
+Logistic Regression       0.50  0.772152   0.285714 0.133333 0.181818  59   5  13   2
+      Random Forest       0.10  0.189873   0.189873 1.000000 0.319149   0  64   0  15
+      Random Forest       0.15  0.202532   0.192308 1.000000 0.322581   1  63   0  15
+      Random Forest       0.20  0.227848   0.171429 0.800000 0.282353   6  58   3  12
+      Random Forest       0.25  0.316456   0.169492 0.666667 0.270270  15  49   5  10
+      Random Forest       0.30  0.417722   0.139535 0.400000 0.206897  27  37   9   6
+      Random Forest       0.35  0.594937   0.160000 0.266667 0.200000  43  21  11   4
+      Random Forest       0.40  0.721519   0.181818 0.133333 0.153846  55   9  13   2
+      Random Forest       0.45  0.784810   0.333333 0.133333 0.190476  60   4  13   2
+      Random Forest       0.50  0.784810   0.000000 0.000000 0.000000  62   2  15   0
+
+Probability summary:
+              model  min_probability  mean_probability  median_probability  max_probability  roc_auc   pr_auc
+Logistic Regression     9.965212e-08          0.078352            0.000539         0.919913 0.553125 0.238817
+      Random Forest     1.452512e-01          0.314317            0.308360         0.586947 0.423958 0.209629
+
+False-negative analysis uses the default probability threshold of 0.50.
+Threshold analysis is descriptive and does not constitute clinical threshold selection.
+This is a research baseline, not a clinical diagnostic system.

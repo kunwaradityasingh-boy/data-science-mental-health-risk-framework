@@ -1,0 +1,60 @@
+EATD TEXT + VOICE MULTIMODAL FUSION REPORT
+============================================================
+
+DATA
+----
+Training participants: 83
+Validation participants: 79
+Validation non-depressed: 64
+Validation depressed: 15
+
+FUSION METHOD
+-------------
+Meta-model: Logistic Regression
+Meta-model inputs:
+- Text OOF probability
+- Voice OOF probability
+
+OOF folds: 5
+
+Official EATD validation split remained
+untouched during meta-model training.
+
+Final text and voice models were trained
+on the complete training split before
+validation prediction.
+
+Split-aware participant keys were used.
+
+PRIMARY THRESHOLD
+-----------------
+0.50
+
+RESULTS
+-------
+Accuracy : 0.746835
+Precision: 0.222222
+Recall   : 0.133333
+F1       : 0.166667
+ROC-AUC  : 0.516667
+PR-AUC   : 0.215210
+
+CONFUSION MATRIX
+----------------
+TN: 57
+FP: 7
+FN: 13
+TP: 2
+
+REPRODUCIBILITY
+---------------
+Random state: 42
+Official train/validation split preserved.
+No validation labels used for meta-model fitting.
+No validation threshold tuning performed.
+
+LIMITATION
+----------
+The multimodal validation result is a research
+benchmark and must not be interpreted as a
+clinical diagnosis or clinical probability.

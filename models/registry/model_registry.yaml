@@ -1,0 +1,182 @@
+project:
+  name: "Data Science Framework for Early Detection of Mental Health Risk"
+  framework_version: "0.1.0"
+  purpose: "Research-only multimodal risk signal framework"
+  clinical_use: false
+
+models:
+
+  - model_id: "dreaddit_text_baseline"
+    model_version: "1.0.0"
+    modality: "text"
+    dataset: "Dreaddit"
+    task: "stress_related_classification"
+    algorithm: "TF-IDF + Logistic Regression"
+    validation_strategy: "Post-aware group validation"
+    status: "research_baseline"
+
+    validation_metrics:
+      accuracy: 0.7526
+      precision: 0.7395
+      recall: 0.8125
+      f1: 0.7743
+      roc_auc: 0.8432
+      pr_auc: 0.8462
+
+    limitations:
+      - "Exact cross-split text overlaps were detected and retained as an evaluation limitation."
+      - "Research dataset; model output is not a clinical diagnosis."
+
+  - model_id: "dreaddit_combined_baseline"
+    model_version: "1.0.0"
+    modality: "text_plus_engineered_features"
+    dataset: "Dreaddit"
+    task: "stress_related_classification"
+    algorithm: "TF-IDF + engineered features + Logistic Regression"
+    validation_strategy: "Post-aware group validation"
+    status: "research_baseline"
+
+    validation_metrics:
+      accuracy: 0.7766
+      precision: 0.7771
+      recall: 0.8026
+      f1: 0.7896
+      roc_auc: 0.8503
+      pr_auc: 0.8478
+
+    limitations:
+      - "Cross-split text overlap limitation is documented."
+      - "Research model; output must not be interpreted as diagnosis."
+
+  - model_id: "studentlife_behavior_baseline"
+    model_version: "1.0.0"
+    modality: "behavior"
+    dataset: "StudentLife"
+    task: "PHQ-9_score_regression"
+    algorithm: "Random Forest Regression"
+    validation_strategy: "5-fold participant-level cross-validation"
+    status: "research_baseline"
+
+    validation_metrics:
+      mae: 3.8488
+      rmse: 4.7222
+      r2: -0.1510
+
+    target:
+      name: "phq9_score"
+      source: "StudentLife PHQ-9 PRE"
+      range: "0-23"
+
+    limitations:
+      - "PHQ-9 source table does not provide an exact assessment timestamp."
+      - "Behavior features are whole-study participant-level aggregates."
+      - "This experiment is not a true temporal early-prediction evaluation."
+      - "Negative R2 indicates weak explanatory performance of the baseline."
+
+  - model_id: "eatd_voice_logistic_regression"
+    model_version: "1.0.0"
+    modality: "voice"
+    dataset: "EATD"
+    task: "depression_related_classification"
+    algorithm: "Acoustic features + Logistic Regression"
+    validation_strategy: "Official EATD validation split"
+    status: "research_baseline"
+
+    validation_metrics:
+      accuracy: 0.772152
+      precision: 0.285714
+      recall: 0.133333
+      f1: 0.181818
+      roc_auc: 0.553125
+      pr_auc: 0.238817
+
+    limitations:
+      - "Standalone acoustic baseline showed weak discrimination."
+      - "Class imbalance affects precision, recall and F1 interpretation."
+      - "Model output is not a clinical diagnosis."
+
+  - model_id: "eatd_text_baseline"
+    model_version: "1.0.0"
+    modality: "text"
+    dataset: "EATD"
+    task: "depression_related_classification"
+    algorithm: "Character TF-IDF + Logistic Regression"
+    validation_strategy: "Official EATD validation split"
+    status: "research_baseline"
+
+    validation_metrics:
+      accuracy: 0.784810
+      precision: 0.0
+      recall: 0.0
+      f1: 0.0
+      roc_auc: 0.509375
+      pr_auc: 0.210533
+
+    limitations:
+      - "Default threshold produced no true-positive predictions."
+      - "ROC-AUC indicates weak discrimination in this baseline."
+      - "Class imbalance limits interpretation of accuracy."
+
+  - model_id: "eatd_text_voice_fusion"
+    model_version: "1.0.0"
+    modality: "text_plus_voice"
+    dataset: "EATD"
+    task: "depression_related_classification"
+    algorithm: "OOF probability fusion + Logistic Regression"
+    validation_strategy: "Train-only 5-fold OOF fusion with untouched official validation split"
+    status: "research_baseline"
+
+    validation_metrics:
+      accuracy: 0.746835
+      precision: 0.222222
+      recall: 0.133333
+      f1: 0.166667
+      roc_auc: 0.516667
+      pr_auc: 0.215210
+
+    confusion_matrix:
+      true_negative: 57
+      false_positive: 7
+      false_negative: 13
+      true_positive: 2
+
+    limitations:
+      - "Multimodal baseline showed weak discrimination."
+      - "Official validation set contains 64 non-depressed and 15 depressed participants."
+      - "Threshold analysis was performed."
+      - "Research-only signal; not a clinical diagnosis."
+
+governance:
+  risk_output_type: "research risk signal"
+  diagnosis_supported: false
+  human_review_required: true
+  missing_or_invalid_input_policy: "UNKNOWN"
+  prohibited_uses:
+    - "Clinical diagnosis"
+    - "Emergency triage"
+    - "Academic punishment"
+    - "Employment decisions"
+    - "Insurance decisions"
+    - "Legal decisions"
+    - "Automated treatment decisions"
+
+datasets:
+  dreaddit:
+    role: "Text stress-related research benchmark"
+
+  modma:
+    role: "Voice provenance and governance track"
+    ml_benchmark_completed: false
+    reason: "Safeguarded raw audio was not available for modeling"
+
+  studentlife:
+    role: "Behavioral research benchmark"
+
+  eatd:
+    role: "Voice, text and multimodal research benchmark"
+
+registry_notes:
+  - "Metrics represent documented research experiments and their stated validation protocols."
+  - "Models must not be interpreted as clinical diagnostic systems."
+  - "Dataset-specific limitations must accompany model results."
+  - "Model versions are tracked independently from dataset versions."

@@ -1,0 +1,152 @@
+schema:
+  name: "UnifiedPredictionSchema"
+  version: "1.0.0"
+  framework_version: "0.1.0"
+  purpose: "Standardized multimodal research risk prediction output"
+
+subject:
+  subject_id:
+    type: "string"
+    required: true
+    description: "Pseudonymous subject identifier"
+
+modality_prediction:
+  modality:
+    type: "enum"
+    values:
+      - "text"
+      - "voice"
+      - "behavior"
+
+  model_id:
+    type: "string"
+    required: true
+
+  model_version:
+    type: "string"
+    required: true
+
+  score:
+    type: "float"
+    minimum: 0.0
+    maximum: 1.0
+    nullable: true
+    description: "Model-generated normalized research signal, not a clinical probability"
+
+  prediction:
+    type: "integer"
+    values:
+      - 0
+      - 1
+    nullable: true
+
+  data_quality:
+    type: "enum"
+    values:
+      - "acceptable"
+      - "warning"
+      - "insufficient"
+      - "unknown"
+
+  status:
+    type: "enum"
+    values:
+      - "success"
+      - "unknown"
+      - "invalid_input"
+      - "insufficient_data"
+      - "model_error"
+
+  timestamp:
+    type: "datetime"
+    required: true
+
+  message:
+    type: "string"
+    nullable: true
+
+unified_prediction:
+  subject_id:
+    type: "string"
+    required: true
+
+  overall_status:
+    type: "enum"
+    values:
+      - "success"
+      - "unknown"
+      - "invalid_input"
+      - "insufficient_data"
+      - "model_error"
+
+  risk_signal:
+    type: "enum"
+    values:
+      - "low"
+      - "moderate"
+      - "high"
+      - "unknown"
+
+  human_review_required:
+    type: "boolean"
+    default: true
+
+  modalities_available:
+    type: "list"
+    allowed_values:
+      - "text"
+      - "voice"
+      - "behavior"
+
+  modality_predictions:
+    type: "list"
+    item_schema: "modality_prediction"
+
+  model_versions:
+    type: "list"
+    item_type: "string"
+
+  timestamp:
+    type: "datetime"
+    required: true
+
+  framework_version:
+    type: "string"
+    default: "0.1.0"
+
+  message:
+    type: "string"
+    nullable: true
+
+unknown_policy:
+  enabled: true
+  default_status: "unknown"
+  default_risk_signal: "unknown"
+  human_review_required: true
+
+  triggers:
+    - "missing_required_input"
+    - "insufficient_data"
+    - "unsupported_modality"
+    - "invalid_input"
+    - "model_inference_failure"
+    - "data_quality_failure"
+
+governance:
+  research_only: true
+  clinical_diagnosis: false
+  automated_clinical_decision: false
+  human_review_required: true
+
+prohibited_interpretation:
+  - "clinical diagnosis"
+  - "clinical probability"
+  - "emergency triage"
+  - "automated treatment decision"
+
+audit:
+  timestamp_required: true
+  model_id_required: true
+  model_version_required: true
+  modality_required: true
+  subject_id_pseudonymous: true

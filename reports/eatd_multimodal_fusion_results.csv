@@ -1,0 +1,2 @@
+model,validation_participants,non_depressed,depressed,threshold,accuracy,precision,recall,f1,roc_auc,pr_auc
+text_voice_fusion_logistic_regression,79,64,15,0.5,0.7468354430379747,0.2222222222222222,0.13333333333333333,0.16666666666666666,0.5166666666666666,0.21520957146984

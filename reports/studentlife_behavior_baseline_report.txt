@@ -1,0 +1,26 @@
+StudentLife Behavioral Baseline Model
+=====================================
+
+Dataset role:
+Retrospective participant-level behavioral association baseline.
+
+Important limitation:
+The available PHQ-9 table contains pre/post assessment type but no exact assessment timestamp. Therefore this experiment is NOT presented as temporally aligned early prediction.
+
+Participants: 46
+Behavioral features: 53
+Target: PHQ-9 pre-assessment score
+Target range: 0.00 - 23.00
+
+5-Fold Participant-Level Cross-Validation
+------------------------------------------
+
+Ridge Regression
+MAE: 5.3253 +/- 0.6841
+RMSE: 6.7992 +/- 0.9907
+R2: -2.1558 +/- 2.1368
+
+Random Forest
+MAE: 3.8488 +/- 1.3615
+RMSE: 4.7222 +/- 1.7065
+R2: -0.1510 +/- 0.2538

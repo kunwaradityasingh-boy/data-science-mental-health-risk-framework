@@ -1,0 +1,92 @@
+framework:
+  name: "Data Science Framework for Early Detection of Mental Health Risk"
+  version: "0.1.0"
+  purpose: "Research-only multimodal risk signal integration"
+  clinical_use: false
+
+modalities:
+
+  text:
+    enabled: true
+    model_id: "dreaddit_text_baseline"
+    model_version: "1.0.0"
+    dataset: "Dreaddit"
+    artifact:
+      vectorizer: "models/text_baseline/tfidf_vectorizer.joblib"
+      model: "models/text_baseline/logistic_regression.joblib"
+    input_type: "text"
+
+  voice:
+    enabled: true
+    model_id: "eatd_voice_logistic_regression"
+    model_version: "1.0.0"
+    dataset: "EATD"
+    artifact:
+      model: "models/eatd_voice/logistic_regression.joblib"
+    input_type: "acoustic_features"
+
+  behavior:
+    enabled: true
+    model_id: "studentlife_behavior_baseline"
+    model_version: "1.0.0"
+    dataset: "StudentLife"
+    artifact:
+      model: "models/studentlife_behavior/random_forest_baseline.joblib"
+    input_type: "behavior_features"
+    target: "phq9_score"
+
+fusion:
+  enabled: false
+  reason: >
+    Text, voice and behavior models were evaluated on different datasets,
+    target definitions and validation protocols. Cross-dataset probability
+    fusion is therefore not enabled in the current framework.
+
+  available_fusion:
+    model_id: "eatd_text_voice_fusion"
+    model_version: "1.0.0"
+    modalities:
+      - "text"
+      - "voice"
+    artifact: "models/eatd_multimodal/text_voice_fusion_logistic_regression.joblib"
+
+output:
+  schema:
+    file: "src/data/prediction/prediction_schema.yaml"
+    version: "1.0.0"
+
+  unknown_policy:
+    enabled: true
+    default_status: "unknown"
+    default_risk_signal: "unknown"
+    human_review_required: true
+
+quality:
+  require_model_artifact: true
+  require_valid_input: true
+  require_finite_numeric_features: true
+  missing_modality_allowed: true
+
+governance:
+  research_only: true
+  diagnosis: false
+  human_review_required: true
+
+  prohibited_uses:
+    - "clinical diagnosis"
+    - "emergency triage"
+    - "academic punishment"
+    - "employment decisions"
+    - "insurance decisions"
+    - "legal decisions"
+    - "automated treatment decisions"
+
+logging:
+  enabled: true
+  include_timestamp: true
+  include_model_id: true
+  include_model_version: true
+  include_modality: true
+  pseudonymous_subject_id_only: true
+  raw_text_logging: false
+  raw_audio_logging: false
