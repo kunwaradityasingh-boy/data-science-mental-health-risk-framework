@@ -416,6 +416,45 @@ section[data-testid="stSidebar"] hr {
 /* ---------- Hide Streamlit chrome ---------- */
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
+
+/* ---------- Clean modern density ---------- */
+.hero-shell {
+    min-height: 225px;
+    padding: 34px 38px;
+}
+
+.hero-subtitle {
+    margin: 10px 0 14px 0;
+    max-width: 760px;
+}
+
+.kpi-card {
+    min-height: 92px;
+    padding: 15px 16px;
+}
+
+.section-title {
+    font-size: 22px;
+}
+
+.section-subtitle {
+    margin-bottom: 12px;
+}
+
+.info-card {
+    padding: 17px;
+}
+
+.gov-card {
+    padding: 15px 18px;
+    margin-bottom: 10px;
+}
+
+.footer {
+    padding: 15px 0 2px 0;
+    margin-top: 18px;
+}
+
 /* ============================================================
    INDUSTRY / ENTERPRISE UI LAYER
    ============================================================ */
@@ -909,32 +948,20 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
-    st.markdown('<div class="sidebar-section">Research progress</div>', unsafe_allow_html=True)
-
-    phases = [
-        "Phase 2 — Data schemas",
-        "Phase 3 — Dreaddit text",
-        "Phase 4 — MODMA research/access",
-        "Phase 5 — StudentLife behavior",
-        "Phase 6 — EATD voice",
-        "Phase 7 — EATD text",
-        "Phase 8 — Text + Voice fusion",
-        "Phase 9 — Integration & governance",
-        "Phase 10 — Research analysis",
-    ]
-
-    for phase in phases:
-        st.markdown(
-            f'<div class="phase-item">✓ {phase}</div>',
-            unsafe_allow_html=True,
-        )
-
     st.divider()
 
-    st.caption(
-        "Research prototype only. Model outputs are not medical "
-        "probabilities or diagnoses."
+    st.markdown(
+        """
+        <div class="side-status">
+            <span class="side-dot dot-green"></span>
+            <span><strong>Framework status</strong><br>
+            <small>Phase 10 complete</small></span>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
+
+    st.caption("Research prototype · not a diagnostic system.")
 
 
 # ============================================================
@@ -949,27 +976,19 @@ st.markdown(
             Research environment operational
         </div>
         <div class="enterprise-right">
-            Framework v0.1.0 · Dataset-specific evaluation · Clinical use disabled
+            Framework v0.1.0 · Clinical use disabled
         </div>
     </div>
 
     <div class="hero-shell">
-        <div class="hero-kicker">DATA SCIENCE · AI RESEARCH · RESPONSIBLE AI</div>
-        <h1 class="hero-title">
-            Mental Health Risk Research Framework
-        </h1>
+        <div class="hero-kicker">AI · DATA SCIENCE · RESEARCH</div>
+        <h1 class="hero-title">Mental Health Risk Research Framework</h1>
         <p class="hero-subtitle">
-            A production-style research interface for investigating
-            text, voice and behavioral signals with reproducible,
-            dataset-specific machine-learning pipelines.
+            Multimodal research dashboard for text, voice and behavioral analysis.
         </p>
-
         <div class="hero-meta">
             <span class="badge badge-green">✓ Phase 10 Complete</span>
-            <span class="badge badge-light">🧪 Research Prototype</span>
-            <span class="meta-chip">3 Modalities</span>
-            <span class="meta-chip">Model Registry</span>
-            <span class="meta-chip">Governance Layer</span>
+            <span class="badge badge-light">Research Prototype</span>
         </div>
     </div>
     """,
@@ -1010,76 +1029,8 @@ for column, (icon, value, label, note) in zip([c1, c2, c3, c4], overview):
 
 st.write("")
 
-st.markdown(
-    """
-    <div class="section-title">Model portfolio</div>
-    <div class="section-subtitle">
-        Live research components currently exposed through this interface
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-m1, m2, m3 = st.columns(3)
-
-portfolio_cards = [
-    (
-        m1,
-        "💬",
-        "Text Intelligence",
-        "Dreaddit · TF-IDF + Logistic Regression",
-        "Classification research signal",
-        TEXT_AVAILABLE,
-    ),
-    (
-        m2,
-        "🎙️",
-        "Voice Analytics",
-        "EATD · 142 acoustic features + Logistic Regression",
-        "Acoustic classification research signal",
-        VOICE_AVAILABLE,
-    ),
-    (
-        m3,
-        "📱",
-        "Behavior Analytics",
-        "StudentLife · Random Forest regression",
-        "PHQ-9 research target estimate",
-        BEHAVIOR_AVAILABLE,
-    ),
-]
-
-for col, icon, name, meta, purpose, available in portfolio_cards:
-    with col:
-        state = "LIVE" if available else "UNAVAILABLE"
-        state_class = "model-live" if available else "model-live"
-        st.markdown(
-            f"""
-            <div class="model-card">
-                <div class="kpi-icon">{icon}</div>
-                <div class="model-name">{name}</div>
-                <div class="model-meta">
-                    {meta}<br>
-                    {purpose}
-                </div>
-                <span class="{state_class}">{state}</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
 st.write("")
-st.markdown(
-    """
-    <div class="research-note">
-        <strong>Research boundary:</strong>
-        each modality is evaluated within its own dataset and protocol.
-        Cross-dataset probability fusion remains intentionally disabled.
-        Dashboard outputs are research signals, not medical diagnoses.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+
 
 # ============================================================
 # MAIN TABS
@@ -1153,27 +1104,9 @@ with text_tab:
         st.markdown(
             """
             <div class="info-card">
-                <h4>About this experiment</h4>
-                <p>
-                    The live demo uses the trained Dreaddit text baseline.
-                    The displayed score is a model output for the research
-                    classification task and should not be interpreted as
-                    clinical probability.
-                </p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        st.write("")
-
-        st.markdown(
-            """
-            <div class="info-card">
                 <h4>Model</h4>
-                <p><strong>TF-IDF</strong> feature representation<br>
-                <strong>Logistic Regression</strong> classifier<br>
-                <strong>Dreaddit</strong> research dataset</p>
+                <p><strong>TF-IDF</strong> + <strong>Logistic Regression</strong><br>
+                Dataset: <strong>Dreaddit</strong></p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -1204,15 +1137,15 @@ with text_tab:
 
         if result["prediction"]:
             st.warning(
-                "Stress-related classification signal detected by the research model."
+                "Class-1 research signal detected."
             )
         else:
             st.success(
-                "No stress-related classification signal detected by the research model."
+                "No Class-1 research signal detected."
             )
 
         st.caption(
-            "Research interpretation only · not a diagnosis · not a clinical probability."
+            "Research output · not a diagnosis."
         )
 
 
@@ -1266,12 +1199,9 @@ with voice_tab:
             st.markdown(
                 """
                 <div class="info-card">
-                    <h4>Research target</h4>
-                    <p>
-                        EATD voice classification using acoustic features
-                        and Logistic Regression. The output is a research
-                        classification signal, not a diagnosis.
-                    </p>
+                    <h4>Model</h4>
+                    <p>EATD · 142 acoustic features<br>
+                    Logistic Regression</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -1312,7 +1242,7 @@ with voice_tab:
                 )
 
             st.caption(
-                "Feature values are shown for research transparency."
+                "Acoustic feature values."
             )
 
 
@@ -1433,9 +1363,9 @@ with behavior_tab:
 # ============================================================
 
 with results_tab:
-    st.markdown('<div class="section-title">Research performance console</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Research results</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="section-subtitle">Verified experiment outputs · descriptive comparison only · no cross-dataset ranking</div>',
+        '<div class="section-subtitle">Verified dataset-specific experiment results</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -1594,57 +1524,30 @@ with governance_tab:
         """
         <div class="gov-card">
             <h4>🛡️ Research-only system</h4>
-            <p>
-                This framework does not diagnose mental-health disorders,
-                does not replace qualified professionals and must not be
-                used as an automated consequential decision system.
-            </p>
+            <p>No diagnosis and no automated consequential decisions.</p>
         </div>
 
         <div class="gov-card">
             <h4>🚫 Prohibited use</h4>
-            <ul>
-                <li>Clinical diagnosis</li>
-                <li>Emergency triage</li>
-                <li>Automated treatment decisions</li>
-                <li>Academic punishment</li>
-                <li>Employment decisions</li>
-                <li>Insurance decisions</li>
-                <li>Legal decisions</li>
-                <li>Treating model scores as medical facts</li>
-            </ul>
+            <p>Clinical diagnosis · emergency triage · treatment decisions ·
+            academic punishment · employment · insurance · legal decisions.</p>
         </div>
 
         <div class="gov-card">
             <h4>🔐 Privacy</h4>
-            <ul>
-                <li>Pseudonymous identifiers</li>
-                <li>Consent-aware data handling</li>
-                <li>Data minimization</li>
-                <li>Restricted raw datasets</li>
-                <li>No raw sensitive dataset upload through the dashboard</li>
-                <li>Secure secrets management</li>
-                <li>Model and input validation</li>
-            </ul>
+            <p>Pseudonymous identifiers · consent-aware handling · data minimization ·
+            restricted raw datasets · input/model validation.</p>
         </div>
 
         <div class="gov-card">
-            <h4>👤 Human-in-the-loop</h4>
-            <p>
-                Any consequential interpretation requires appropriately
-                authorized human review. Model output is a research signal,
-                not an autonomous decision.
-            </p>
+            <h4>👤 Human review</h4>
+            <p>Consequential interpretation requires authorized human review.</p>
         </div>
 
         <div class="gov-card">
-            <h4>📌 Interpretation</h4>
-            <p>
-                Text and voice outputs are classification model scores.
-                The StudentLife output is a regression estimate of the
-                PHQ-9 research target. None of these outputs should be
-                interpreted as a person's clinical diagnosis.
-            </p>
+            <h4>📌 Output meaning</h4>
+            <p>Text and voice: classification scores. StudentLife: PHQ-9 research
+            estimate. None is a clinical diagnosis.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1658,12 +1561,9 @@ with governance_tab:
 st.markdown(
     """
     <div class="footer">
-        <strong>🧠 Data Science Framework for Early Detection of Mental Health Risk</strong>
+        <strong>🧠 Mental Health Risk Research Framework</strong>
+        · Multimodal Research Prototype · v0.1.0
         <br>
-        Multimodal Research Prototype · Phase 10 Complete
-        <br>
-        Text · Voice · Behavior · Integration · Governance
-        <br><br>
         Not a diagnostic or clinical decision-making system.
     </div>
     """,
